@@ -104,7 +104,7 @@ def main() -> int:
         # Place your own arguments here
         connection=connection,
         controller=worker_ctrl,
-        timer_sleep_seconds=1.0,
+        timer_period_seconds=HEARTBEAT_PERIOD,
         args=None
     )
     # =============================================================================================
