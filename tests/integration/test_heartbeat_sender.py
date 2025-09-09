@@ -45,12 +45,14 @@ def start_drone() -> None:
 #                            ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
 # =================================================================================================
 def stop(
-    args,  # Add any necessary arguments
+    args: object,  # Add any necessary arguments
+    worker_ctrl: worker_controller.WorkerController
 ) -> None:
     """
     Stop the workers.
     """
-    pass  # Add logic to stop your worker
+    # Add logic to stop your worker
+    worker_controller.WorkerController.request_pause(self=worker_ctrl)
 
 
 # =================================================================================================
@@ -83,7 +85,7 @@ def main() -> int:
     # Mocked GCS, connect to mocked drone which is listening at CONNECTION_STRING
     # source_system = 255 (groundside)
     # source_component = 0 (ground control station)
-    connection = mavutil.mavlink_connection(CONNECTION_STRING)
+    connection = mavutil.mavlink_connection(CONNECTION_STRING) 
     # Don't send another heartbeat since the worker will do so
     main_logger.info("Connected!")
     # pylint: enable=duplicate-code
@@ -92,13 +94,18 @@ def main() -> int:
     #                          ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
     # =============================================================================================
     # Mock starting a worker, since cannot actually start a new process
-    # Create a worker controller for your worker
+    # Create a worker controller for your worker4
+    worker_ctrl = worker_controller.WorkerController()
 
     # Just set a timer to stop the worker after a while, since the worker infinite loops
-    threading.Timer(HEARTBEAT_PERIOD * NUM_TRIALS, stop, (args,)).start()
+    threading.Timer(HEARTBEAT_PERIOD * NUM_TRIALS, stop, args=None).start()
 
     heartbeat_sender_worker.heartbeat_sender_worker(
         # Place your own arguments here
+        connection=connection,
+        controller=worker_ctrl,
+        timer_sleep_seconds=1.0,
+        args=None
     )
     # =============================================================================================
     #                          ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑
