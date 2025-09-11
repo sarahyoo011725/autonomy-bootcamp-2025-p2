@@ -67,7 +67,7 @@ def heartbeat_receiver_worker(
     while (controller.is_exit_requested() == False):
         controller.check_pause()
 
-        res = receiver.run(
+        res = receiver.run( # type: ignore
             type=type, 
             condition=condition, 
             blocking=blocking, 

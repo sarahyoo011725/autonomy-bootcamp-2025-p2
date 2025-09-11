@@ -98,11 +98,11 @@ def main() -> int:
     worker_ctrl = worker_controller.WorkerController()
 
     # Just set a timer to stop the worker after a while, since the worker infinite loops
-    threading.Timer(HEARTBEAT_PERIOD * NUM_TRIALS, stop, args=(args,)).start()
+    threading.Timer(HEARTBEAT_PERIOD * NUM_TRIALS, stop, args=None).start()
 
     heartbeat_sender_worker.heartbeat_sender_worker(
         # Place your own arguments here
-        connection=connection,
+        connection=connection, # type: ignore
         controller=worker_ctrl,
         timer_period_seconds=HEARTBEAT_PERIOD,
         args=None

@@ -107,7 +107,7 @@ def main() -> int:
     # source_system = 255 (groundside)
     # source_component = 0 (ground control station)
     connection = mavutil.mavlink_connection(CONNECTION_STRING)
-    connection.mav.heartbeat_send(
+    connection.mav.heartbeat_send( # type: ignore
         mavutil.mavlink.MAV_TYPE_GCS,
         mavutil.mavlink.MAV_AUTOPILOT_INVALID,
         0,
@@ -134,14 +134,14 @@ def main() -> int:
     threading.Timer(
         HEARTBEAT_PERIOD * (NUM_TRIALS * 2 + DISCONNECT_THRESHOLD + NUM_DISCONNECTS + 2),
         stop,
-        (args,)
+        args=None
     ).start()
 
     # Read the main queue (worker outputs)
-    threading.Thread(target=read_queue, args=(args, main_logger)).start()
+    threading.Thread(target=read_queue, args=(None, main_logger)).start()
 
     heartbeat_receiver_worker.heartbeat_receiver_worker(
-        connection=connection,
+        connection=connection, # type: ignore
         controller=worker_ctrl,
         condition=MESSAGE_CONDITION,
         type=MESSAGE_TYPE,
