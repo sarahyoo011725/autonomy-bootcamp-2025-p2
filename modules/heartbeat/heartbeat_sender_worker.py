@@ -55,11 +55,13 @@ def heartbeat_sender_worker(
 
     while (controller.is_exit_requested() == False):
         controller.check_pause()
+
         res = sender.run(sender) 
         if (res == False) :
             local_logger.info("Connection failed", False)
         else :
             local_logger.info("Connection succeed", True)
+            
         time.sleep(timer_period_seconds)
     # Main loop: do work.
 

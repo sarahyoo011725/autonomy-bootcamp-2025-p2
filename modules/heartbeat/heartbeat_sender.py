@@ -20,7 +20,7 @@ class HeartbeatSender:
         cls,
         connection: mavutil.mavfile,
         args: object,  # Put your own arguments here
-    ) -> "tuple[True, HeartbeatSender] | tuple[False, None]":
+    ) -> "tuple[bool, HeartbeatSender | None]":
         """
         Falliable create (instantiation) method to create a HeartbeatSender object.
         """

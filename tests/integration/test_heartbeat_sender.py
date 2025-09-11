@@ -45,14 +45,14 @@ def start_drone() -> None:
 #                            ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
 # =================================================================================================
 def stop(
+    worker_ctrl: worker_controller.WorkerController,
     args: object,  # Add any necessary arguments
-    worker_ctrl: worker_controller.WorkerController
 ) -> None:
     """
     Stop the workers.
     """
     # Add logic to stop your worker
-    worker_controller.WorkerController.request_pause(self=worker_ctrl)
+    worker_ctrl.request_exit()
 
 
 # =================================================================================================
@@ -98,7 +98,7 @@ def main() -> int:
     worker_ctrl = worker_controller.WorkerController()
 
     # Just set a timer to stop the worker after a while, since the worker infinite loops
-    threading.Timer(HEARTBEAT_PERIOD * NUM_TRIALS, stop, args=None).start()
+    threading.Timer(HEARTBEAT_PERIOD * NUM_TRIALS, stop, args=(args,)).start()
 
     heartbeat_sender_worker.heartbeat_sender_worker(
         # Place your own arguments here
