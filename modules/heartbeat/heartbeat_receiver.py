@@ -35,7 +35,6 @@ class HeartbeatReceiver:
             instance.__logger = local_logger
             return True, instance
         except Exception:
-            local_logger.debug("Failed to create a HeartbeatReceiver object.")
             return False, None
 
     def __init__(

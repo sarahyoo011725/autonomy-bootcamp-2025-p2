@@ -26,7 +26,8 @@ class HeartbeatSender:
         """
         # Create a HeartbeatSender object
         try:
-            return True, HeartbeatSender(HeartbeatSender.__private_key, connection, args)
+            instance = HeartbeatSender(key=HeartbeatSender.__private_key, connection=connection, args=args)
+            return True, instance
         except Exception:
             return False, None
 

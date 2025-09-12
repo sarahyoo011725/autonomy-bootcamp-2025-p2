@@ -46,24 +46,23 @@ def heartbeat_sender_worker(
     # =============================================================================================
     #                          ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
     # =============================================================================================
-    # Instantiate class object (heartbeat_sender.HeartbeatSender)
     res, sender = heartbeat_sender.HeartbeatSender.create(connection=connection, args=None)
 
     if (res == False or sender == None):
-        local_logger.info("Heartbeat sender initialization failed", False)
+        local_logger.error("Failed to create HeartbeatSender", False)
         return
 
     while (controller.is_exit_requested() == False):
         controller.check_pause()
 
         res = sender.run(sender) 
+
         if (res == False) :
             local_logger.info("Connection failed", False)
         else :
             local_logger.info("Connection succeed", True)
             
         time.sleep(timer_period_seconds)
-    # Main loop: do work.
 
 
 # =================================================================================================

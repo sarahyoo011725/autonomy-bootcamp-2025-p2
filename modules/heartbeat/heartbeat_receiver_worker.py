@@ -61,13 +61,14 @@ def heartbeat_receiver_worker(
         args=None
     )
 
-    if (res == True):
-        local_logger.info("Heartbeat receiver connected")
-    
+    if (res == False or receiver == None):
+        local_logger.error("Failed to create HeartbeatReceiver")
+        return
+
     while (controller.is_exit_requested() == False):
         controller.check_pause()
 
-        res = receiver.run( # type: ignore
+        res = receiver.run( 
             type=type, 
             condition=condition, 
             blocking=blocking, 

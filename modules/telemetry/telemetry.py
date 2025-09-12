@@ -71,6 +71,8 @@ class Telemetry:
     """
 
     __private_key = object()
+    __connection : mavutil.mavfile
+    __local_logger : logger.Logger
 
     @classmethod
     def create(
@@ -78,26 +80,33 @@ class Telemetry:
         connection: mavutil.mavfile,
         args,  # Put your own arguments here
         local_logger: logger.Logger,
-    ):
+    ) -> "tuple[bool, Telemetry | None]":
         """
         Falliable create (instantiation) method to create a Telemetry object.
         """
-        pass  # Create a Telemetry object
+        try:
+            instance = Telemetry(key=Telemetry.__private_key, connection=connection, args=args, local_logger=local_logger)
+            return True, instance
+        except Exception:
+            return False, None
 
     def __init__(
         self,
         key: object,
         connection: mavutil.mavfile,
-        args,  # Put your own arguments here
         local_logger: logger.Logger,
+        args,  # Put your own arguments here
     ) -> None:
         assert key is Telemetry.__private_key, "Use create() method"
 
-        # Do any intializiation here
+        self.__connection = connection
+        self.__local_logger = local_logger
+        
 
     def run(
         self,
-        args,  # Put your own arguments here
+        timeout: float,
+        args,  
     ):
         """
         Receive LOCAL_POSITION_NED and ATTITUDE messages from the drone,
@@ -106,8 +115,36 @@ class Telemetry:
         # Read MAVLink message LOCAL_POSITION_NED (32)
         # Read MAVLink message ATTITUDE (30)
         # Return the most recent of both, and use the most recent message's timestamp
-        pass
 
+        pos_msg = self.__connection.recv_match(type="LOCAL_POSITION_NED", blocking=True, timeout=timeout)
+
+        att_msg = self.__connection.recv_match(type="ATTITUDE", blocking=True, timeout=timeout)
+
+        if (not pos_msg):
+            self.__local_logger.error("Failed to receive LOCAL_POSITION_NED message")
+            return None
+        
+        if (not att_msg):
+            self.__local_logger.error("Failed to ATTITUDE message")
+            return None
+        
+        recent_timestamp = max(pos_msg.time_boot_ms, att_msg.time_boot_ms)
+
+        return TelemetryData(
+            time_since_boot=recent_timestamp,
+            x=pos_msg.x,
+            y=pos_msg.y,
+            z=pos_msg.z,
+            x_velocity=pos_msg.vx,
+            y_velocity=pos_msg.vy,
+            z_velocity=pos_msg.vz,
+            roll=att_msg.roll,
+            pitch=att_msg.pitch,
+            yaw=att_msg.yaw,
+            roll_speed=att_msg.rollspeed,
+            pitch_speed=att_msg.pitchspeed,
+            yaw_speed=att_msg.yawspeed
+        )
 
 # =================================================================================================
 #                            ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑

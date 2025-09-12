@@ -31,11 +31,11 @@ ERROR_TOLERANCE = 1e-2
 # =================================================================================================
 # Add your own constants here
 
-QUEUE_TIMEOUT = 30
-BLOCKING_TIMEOUT = -1
-MESSAGE_TYPE="HEARTBEAT"
-MESSAGE_CONDITION='SYS_STATUS.mode==2 and SYS_STATUS.nav_mode==4'
 BLOCKING = False
+BLOCKING_TIMEOUT = -1
+MESSAGE_TYPE = "HEARTBEAT"
+MESSAGE_CONDITION ='HEARTBEAT.mode==2 and HEARTBEAT.nav_mode==4'
+QUEUE_TIMEOUT = 30
 
 # =================================================================================================
 #                            ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑
